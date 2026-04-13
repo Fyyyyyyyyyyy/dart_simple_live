@@ -5,7 +5,7 @@ on:
 
 jobs:
   build_ios:
-    runs-on: macos-15 # 👈 终极物理外挂：直接向 GitHub 申请最新的 macOS 15 服务器，自带 Xcode 16，秒杀一切新特性！
+    runs-on: macos-latest
 
     steps:
       - name: Checkout repository
@@ -16,12 +16,21 @@ jobs:
         with:
           channel: 'stable' 
 
-      # (那个坑爹的 Force Downgrade 降级脚本已经被我彻底删了，绝不再乱改依赖！)
-
       - name: Install Dependencies
         run: |
           cd simple_live_app
           flutter pub get
+
+      # 👇 终极外科手术：强行修改苹果底层的 Podfile，把编译底线拉升到 16.4，彻底消灭新语法报错！
+      - name: Fix iOS Deployment Target
+        run: |
+          cd simple_live_app/ios
+          # 搜索并替换 Podfile 中的系统版本底线
+          sed -i '' "s/^# platform :ios, '.*'/platform :ios, '16.4'/g" Podfile
+          sed -i '' "s/^platform :ios, '.*'/platform :ios, '16.4'/g" Podfile
+          # 强行清理缓存并重新拉取苹果底层依赖
+          rm -rf Pods Podfile.lock
+          pod install --repo-update
 
       - name: Build Unsigned iOS App
         run: |
