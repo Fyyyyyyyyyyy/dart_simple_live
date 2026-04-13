@@ -10,6 +10,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4 
+        with:
+          # 👇 终极时光机启动：精确降落到 12月22日 的完美稳定版！
+          ref: 'fcadd05' 
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -20,17 +23,6 @@ jobs:
         run: |
           cd simple_live_app
           flutter pub get
-
-      # 👇 终极外科手术：强行修改苹果底层的 Podfile，把编译底线拉升到 16.4，彻底消灭新语法报错！
-      - name: Fix iOS Deployment Target
-        run: |
-          cd simple_live_app/ios
-          # 搜索并替换 Podfile 中的系统版本底线
-          sed -i '' "s/^# platform :ios, '.*'/platform :ios, '16.4'/g" Podfile
-          sed -i '' "s/^platform :ios, '.*'/platform :ios, '16.4'/g" Podfile
-          # 强行清理缓存并重新拉取苹果底层依赖
-          rm -rf Pods Podfile.lock
-          pod install --repo-update
 
       - name: Build Unsigned iOS App
         run: |
