@@ -5,20 +5,24 @@ on:
 
 jobs:
   build_ios:
-    runs-on: macos-14 
+    runs-on: macos-latest # 不折腾机器了，用回最稳定的默认配置
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4 
 
-      # 👇 终极杀手锏：别管默认是什么，强行指定使用最新版 Xcode 15.4！
-      - name: Force Xcode 15
-        run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
-
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable' 
+
+      # 👇 终极物理降维打击：在拉取依赖前，用脚本强行篡改 pubspec.yaml，锁死插件版本！
+      - name: Force Downgrade connectivity_plus
+        run: |
+          cd simple_live_app
+          echo "" >> pubspec.yaml
+          echo "dependency_overrides:" >> pubspec.yaml
+          echo "  connectivity_plus: '6.0.0'" >> pubspec.yaml
 
       - name: Install Dependencies
         run: |
