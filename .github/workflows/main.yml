@@ -5,16 +5,20 @@ on:
 
 jobs:
   build_ios:
-    runs-on: macos-14 # 👈 终极必杀：强制指定 GitHub 最新一代的 macOS 14 (M1芯片) 服务器，自带满血最新版 Xcode！
+    runs-on: macos-14 
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4 
 
+      # 👇 终极杀手锏：别管默认是什么，强行指定使用最新版 Xcode 15.4！
+      - name: Force Xcode 15
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable' # 保持不锁版本，用最新 Flutter
+          channel: 'stable' 
 
       - name: Install Dependencies
         run: |
