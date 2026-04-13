@@ -5,16 +5,16 @@ on:
 
 jobs:
   build_ios:
-    runs-on: macos-latest
+    runs-on: macos-14 # 👈 终极必杀：强制指定 GitHub 最新一代的 macOS 14 (M1芯片) 服务器，自带满血最新版 Xcode！
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4 # 👈 这里升级到了 v4
+        uses: actions/checkout@v4 
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: 'stable' # 保持不锁版本，用最新 Flutter
 
       - name: Install Dependencies
         run: |
@@ -34,7 +34,7 @@ jobs:
           zip -qq -r simple_live_trollstore.ipa Payload
 
       - name: Upload IPA Artifact
-        uses: actions/upload-artifact@v4 # 👈 这里也升级到了 v4
+        uses: actions/upload-artifact@v4 
         with:
           name: SimpleLive-TrollStore-IPA
           path: simple_live_app/build/ios/iphoneos/simple_live_trollstore.ipa
