@@ -5,7 +5,7 @@ on:
 
 jobs:
   build_ios:
-    runs-on: macos-latest # 不折腾机器了，用回最稳定的默认配置
+    runs-on: macos-15 # 👈 终极物理外挂：直接向 GitHub 申请最新的 macOS 15 服务器，自带 Xcode 16，秒杀一切新特性！
 
     steps:
       - name: Checkout repository
@@ -16,13 +16,7 @@ jobs:
         with:
           channel: 'stable' 
 
-      # 👇 终极物理降维打击：在拉取依赖前，用脚本强行篡改 pubspec.yaml，锁死插件版本！
-      - name: Force Downgrade connectivity_plus
-        run: |
-          cd simple_live_app
-          echo "" >> pubspec.yaml
-          echo "dependency_overrides:" >> pubspec.yaml
-          echo "  connectivity_plus: '6.0.0'" >> pubspec.yaml
+      # (那个坑爹的 Force Downgrade 降级脚本已经被我彻底删了，绝不再乱改依赖！)
 
       - name: Install Dependencies
         run: |
