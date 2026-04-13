@@ -1,0 +1,43 @@
+name: Build TrollStore IPA
+
+on: 
+  workflow_dispatch: # 允许你手动点击按钮触发编译
+
+jobs:
+  build_ios:
+    runs-on: macos-latest # 白嫖 GitHub 的最新版 Mac 服务器
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.1' # 使用最新稳定版，解决之前的依赖问题
+          channel: 'stable'
+
+      - name: Install Dependencies
+        run: |
+          cd simple_live_app
+          flutter pub get
+
+      - name: Build Unsigned iOS App
+        # 🚨 巨魔核心：--no-codesign 直接生成未签名的 .app
+        run: |
+          cd simple_live_app
+          flutter build ios --release --no-codesign
+
+      - name: Package into TrollStore IPA
+        # 纯手工把 .app 打包成 .ipa 格式
+        run: |
+          cd simple_live_app/build/ios/iphoneos
+          mkdir Payload
+          mv Runner.app Payload/
+          zip -qq -r simple_live_trollstore.ipa Payload
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: SimpleLive-TrollStore-IPA
+          path: simple_live_app/build/ios/iphoneos/simple_live_trollstore.ipa
